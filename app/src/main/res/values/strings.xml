@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GetScan</string>
+    <string name="hint_url">URL</string>
+    <string name="hint_first_chapter">First chapter</string>
+    <string name="hint_last_chapter">Last chapter</string>
+    <string name="hint_manga_name">Manga name</string>
+    <string name="download_scan">Download scan</string>
+</resources>
