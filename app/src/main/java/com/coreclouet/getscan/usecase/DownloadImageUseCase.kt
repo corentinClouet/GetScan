@@ -10,6 +10,9 @@ import java.io.File
 
 class DownloadImageUseCase(private val context: Context) {
 
+    /**
+     * Download image
+     */
     suspend fun invoke(
         mangaName: String,
         currentChapter: Int,
@@ -40,6 +43,9 @@ class DownloadImageUseCase(private val context: Context) {
         }
     }
 
+    /**
+     * Check download state
+     */
     private suspend fun queryDownload(
         fileName: String,
         downloadId: Long?,
@@ -71,6 +77,9 @@ class DownloadImageUseCase(private val context: Context) {
         return true
     }
 
+    /**
+     * Manage file name with chapter and image number
+     */
     private fun getFileName(currentChapter: Int, nbImage: Int): String {
         var finalNbImage = ""
         if (nbImage.toString().length == 1) {
