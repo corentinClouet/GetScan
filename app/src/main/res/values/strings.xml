@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">GetScan</string>
+
+    <!--IHM-->
     <string name="hint_url">URL</string>
     <string name="hint_first_chapter">First chapter</string>
     <string name="hint_last_chapter">Last chapter</string>
     <string name="hint_manga_name">Manga name</string>
     <string name="download_scan">Download scan</string>
+
+    <!--KEYS-->
+    <string name="url_key">URL_KEY</string>
+    <string name="first_chapter_key">FIRST_CHAPTER_KEY</string>
+    <string name="last_chapter_key">LAST_CHAPTER_KEY</string>
+    <string name="manga_name_key">MANGA_NAME_KEY</string>
 </resources>
