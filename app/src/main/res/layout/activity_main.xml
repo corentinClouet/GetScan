@@ -18,7 +18,7 @@
             android:ems="10"
             android:hint="@string/hint_last_chapter"
             android:inputType="number"
-            android:text="201"
+            android:text="10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ed_start_chapter"
             app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
@@ -32,7 +32,7 @@
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="@string/hint_url"
-            android:text="https://frscan.cc/manga/my-hero-academia/{chapter}"
+            android:text="https://www.scan-fr.cc/manga/death-note/{chapter}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
             android:ems="10"
             android:hint="@string/hint_first_chapter"
             android:inputType="number"
-            android:text="201"
+            android:text="10"
             app:layout_constraintEnd_toStartOf="@+id/ed_last_chapter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
@@ -62,7 +62,7 @@
             android:ems="10"
             android:hint="@string/hint_manga_name"
             android:inputType="textPersonName"
-            android:text="My Hero Academia"
+            android:text="Death Note"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_start_chapter" />
@@ -85,7 +85,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:gravity="center"
+            android:gravity="bottom|center"
             android:scrollbars="vertical"
             android:textAlignment="center"
             android:visibility="invisible"

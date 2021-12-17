@@ -18,10 +18,10 @@ class MainActivityViewModel(
     private val downloadImageUseCase: DownloadImageUseCase
 ) : ViewModel() {
 
-    private val _infos = MutableLiveData<String>()
+    private val _infos: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val infos: LiveData<String> = _infos
 
-    private val _loading = MutableLiveData<Boolean>()
+    private val _loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val loading: LiveData<Boolean> = _loading
 
     private lateinit var sourceUrl: String
@@ -36,6 +36,9 @@ class MainActivityViewModel(
      */
     fun downloadManga() {
         viewModelScope.launch(Dispatchers.IO) {
+            //reset error and infos
+            error = ""
+            _infos.postValue("")
             // loop on all chapters
             for (currentChapter in firstChapter..lastChapter) {
                 setLoading(true)
@@ -53,12 +56,16 @@ class MainActivityViewModel(
                 updateInfos("Chapter $currentChapter nbImages ${images.size}")
                 // download each images
                 for (currentImageIndice in images.indices) {
-                    downloadImageUseCase.invoke(
+                    val downloadResult = downloadImageUseCase.invoke(
                         mangaName,
                         currentChapter,
                         currentImageIndice + 1,
                         images[currentImageIndice]
                     )
+                    // manage error if download failed
+                    if (!downloadResult) {
+                        updateError("DL FAILED Chapter $currentChapter image ${currentImageIndice + 1}")
+                    }
                 }
             }
             // download finish
@@ -66,7 +73,7 @@ class MainActivityViewModel(
             if (error.isEmpty()) {
                 updateInfos("Download finish !")
             } else {
-                updateInfos(error)
+                updateInfos(error, true)
             }
 
         }
@@ -101,9 +108,13 @@ class MainActivityViewModel(
     /**
      * Update download progress
      */
-    private fun updateInfos(info: String) {
+    private fun updateInfos(info: String, reset: Boolean = false) {
         Log.d("CCL", info)
-        val result = _infos.value + "\n$info"
+        val result: String = if (reset) {
+            "\n$info"
+        } else {
+            _infos.value + "\n$info"
+        }
         _infos.postValue(result)
     }
 

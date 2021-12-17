@@ -15,7 +15,7 @@ class DownloadImageUseCase(private val context: Context) {
         currentChapter: Int,
         nbImage: Int,
         downloadUrlOfImage: String
-    ) {
+    ): Boolean {
         try {
             val downloadManager =
                 context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
@@ -33,9 +33,10 @@ class DownloadImageUseCase(private val context: Context) {
                     File.separator + "$mangaName/$currentChapter/$filename.jpg"
                 )
             val downloadId = downloadManager?.enqueue(request)
-            queryDownload(filename, downloadId, downloadManager)
+            return queryDownload(filename, downloadId, downloadManager)
         } catch (e: Exception) {
             Log.e("CCL DownloadImageUseCase", e.message.toString())
+            return false
         }
     }
 
@@ -43,8 +44,8 @@ class DownloadImageUseCase(private val context: Context) {
         fileName: String,
         downloadId: Long?,
         downloadManager: DownloadManager?
-    ) {
-        if (downloadId == null || downloadManager == null) return
+    ): Boolean {
+        if (downloadId == null || downloadManager == null) return false
         // using query method
         var finishDownload = false
         while (!finishDownload) {
@@ -54,8 +55,8 @@ class DownloadImageUseCase(private val context: Context) {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 when (status) {
                     DownloadManager.STATUS_FAILED -> {
-                        finishDownload = true
                         Log.e("CCL", "STATUS_FAILED $fileName")
+                        return false
                     }
                     DownloadManager.STATUS_PAUSED -> {}
                     DownloadManager.STATUS_PENDING -> {}
@@ -67,6 +68,7 @@ class DownloadImageUseCase(private val context: Context) {
                 }
             }
         }
+        return true
     }
 
     private fun getFileName(currentChapter: Int, nbImage: Int): String {
