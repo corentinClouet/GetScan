@@ -1,75 +1,65 @@
 package com.coreclouet.getscan.ui.activity
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
+import android.text.method.ScrollingMovementMethod
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.coreclouet.getscan.R
 import com.coreclouet.getscan.databinding.ActivityMainBinding
 import com.coreclouet.getscan.ui.viewmodel.MainActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainActivityViewModel by viewModel()
 
-    // Register the permissions callback, which handles the user's response to the
-    // system permissions dialog. Save the return value, an instance of
-    // ActivityResultLauncher. You can use either a val, as shown in this snippet,
-    // or a lateinit var in your onAttach() or onCreate() method.
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                // Permission is granted. Continue the action or workflow in your
-                // app.
-            } else {
-                // Explain to the user that the feature is unavailable because the
-                // features requires a permission that the user has denied. At the
-                // same time, respect the user's decision. Don't link to system
-                // settings in an effort to convince the user to change their
-                // decision.
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.tvInfoDownload.movementMethod = ScrollingMovementMethod()
         binding.btnDownloadScan.setOnClickListener {
-            if (viewModel.checkData(
-                    binding.edBaseUrl.text.toString(),
-                    binding.edStartChapter.text.toString().toInt(),
-                    binding.edLastChapter.text.toString().toInt(),
-                    binding.edMangaName.text.toString()
-                )
-            ) {
-                viewModel.downloadManga()
-            }
+            downloadManga()
         }
-        checkPermission()
+        initObservers()
     }
 
-    private fun checkPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
-            }
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
+    private fun initObservers() {
+        viewModel.infos.observe(this, { infos ->
+            binding.tvInfoDownload.text = infos
+        })
+
+        viewModel.loading.observe(this, { isLoading ->
+            manageLoading(isLoading)
+        })
+    }
+
+    private fun downloadManga() {
+        if (viewModel.checkData(
+                binding.edBaseUrl.text.toString(),
+                binding.edStartChapter.text.toString().toInt(),
+                binding.edLastChapter.text.toString().toInt(),
+                binding.edMangaName.text.toString()
+            )
+        ) {
+            viewModel.downloadManga()
         }
     }
 
+    private fun manageLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.pbDownload.visibility = View.VISIBLE
+            binding.tvInfoDownload.visibility = View.VISIBLE
+        } else {
+            binding.pbDownload.visibility = View.INVISIBLE
+        }
+        binding.edBaseUrl.isEnabled = !isLoading
+        binding.edStartChapter.isEnabled = !isLoading
+        binding.edLastChapter.isEnabled = !isLoading
+        binding.edMangaName.isEnabled = !isLoading
+        binding.btnDownloadScan.isEnabled = !isLoading
+    }
 
 }

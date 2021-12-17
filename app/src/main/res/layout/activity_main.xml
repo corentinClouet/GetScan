@@ -18,7 +18,7 @@
             android:ems="10"
             android:hint="@string/hint_last_chapter"
             android:inputType="number"
-            android:text="1"
+            android:text="201"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ed_start_chapter"
             app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
@@ -32,7 +32,7 @@
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="@string/hint_url"
-            android:text="https://www.scan-fr.cc/manga/dragon-ball-super/{chapter}/1"
+            android:text="https://frscan.cc/manga/my-hero-academia/{chapter}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
             android:ems="10"
             android:hint="@string/hint_first_chapter"
             android:inputType="number"
-            android:text="1"
+            android:text="201"
             app:layout_constraintEnd_toStartOf="@+id/ed_last_chapter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
@@ -62,7 +62,7 @@
             android:ems="10"
             android:hint="@string/hint_manga_name"
             android:inputType="textPersonName"
-            android:text="Dragon Ball Super"
+            android:text="My Hero Academia"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_start_chapter" />
@@ -76,5 +76,36 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_info_download"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:scrollbars="vertical"
+            android:textAlignment="center"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/pb_download"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ed_manga_name"
+            tools:text="test"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/pb_download"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/btn_download_scan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
