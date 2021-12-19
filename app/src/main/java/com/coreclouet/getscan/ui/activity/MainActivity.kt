@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun initObservers() {
         viewModel.infos.observe(this, { infos ->
-            binding.tvInfoDownload.text = infos
+            binding.tvInfoDownload.append("\n$infos")
         })
 
         viewModel.loading.observe(this, { isLoading ->

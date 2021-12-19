@@ -73,7 +73,7 @@ class MainActivityViewModel(
             if (error.isEmpty()) {
                 updateInfos("Download finish !")
             } else {
-                updateInfos(error, true)
+                updateInfos(error)
             }
 
         }
@@ -108,14 +108,9 @@ class MainActivityViewModel(
     /**
      * Update download progress
      */
-    private fun updateInfos(info: String, reset: Boolean = false) {
+    private fun updateInfos(info: String) {
         Log.d("CCL", info)
-        val result: String = if (reset) {
-            "\n$info"
-        } else {
-            _infos.value + "\n$info"
-        }
-        _infos.postValue(result)
+        _infos.postValue(info)
     }
 
     /**
