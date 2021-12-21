@@ -9,6 +9,7 @@ import com.coreclouet.getscan.usecase.DownloadImageUseCase
 import com.coreclouet.getscan.usecase.FindImagesUseCase
 import com.coreclouet.getscan.usecase.GetSourceCodeUseCase
 import com.coreclouet.getscan.utils.CHAPTER
+import com.coreclouet.getscan.utils.Website
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,7 +25,8 @@ class MainActivityViewModel(
     private val _loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val loading: LiveData<Boolean> = _loading
 
-    private lateinit var sourceUrl: String
+    private lateinit var website: Website
+    private lateinit var url: String
     private var firstChapter: Int = 1
     private var lastChapter: Int = 1
     private lateinit var mangaName: String
@@ -43,7 +45,7 @@ class MainActivityViewModel(
             for (currentChapter in firstChapter..lastChapter) {
                 setLoading(true)
                 // get URL and source code of it
-                val currentUrl = sourceUrl.replace(CHAPTER, currentChapter.toString())
+                val currentUrl = url.replace(CHAPTER, currentChapter.toString())
                 val sourceCode = getSourceCodeUseCase.invoke(currentUrl)
                 if (sourceCode == null) {
                     Log.e("CCL", "URL error $currentChapter")
@@ -51,7 +53,7 @@ class MainActivityViewModel(
                     continue
                 }
                 // find all images in source code
-                val images = findImagesUseCase.invoke(sourceCode)
+                val images = findImagesUseCase.invoke(sourceCode, website)
                 // update progress
                 updateInfos("Chapter $currentChapter nbImages ${images.size}")
                 // download each images
@@ -83,17 +85,20 @@ class MainActivityViewModel(
      * Check input data
      */
     fun checkData(
+        website: Website,
         sourceUrl: String?,
-        firstChapter: Int,
-        lastChapter: Int,
+        endpoint: String?,
+        firstChapter: String?,
+        lastChapter: String?,
         mangaName: String?
     ): Boolean {
-        if (sourceUrl.isNullOrEmpty() || !sourceUrl.contains(CHAPTER)
-            || firstChapter < 1 || lastChapter < 1 || mangaName.isNullOrEmpty()
+        if (sourceUrl.isNullOrEmpty() || endpoint.isNullOrEmpty() || !endpoint.contains(CHAPTER)
+            || firstChapter.isNullOrEmpty() || lastChapter.isNullOrEmpty() || lastChapter.toInt() < firstChapter.toInt() || mangaName.isNullOrEmpty()
         ) return false
-        this.sourceUrl = sourceUrl
-        this.firstChapter = firstChapter
-        this.lastChapter = lastChapter
+        this.website = website
+        this.url = sourceUrl + endpoint
+        this.firstChapter = firstChapter.toInt()
+        this.lastChapter = lastChapter.toInt()
         this.mangaName = mangaName
         return true
     }

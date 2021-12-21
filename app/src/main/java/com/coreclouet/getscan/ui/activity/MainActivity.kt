@@ -4,11 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.coreclouet.getscan.R
 import com.coreclouet.getscan.databinding.ActivityMainBinding
 import com.coreclouet.getscan.ui.viewmodel.MainActivityViewModel
+import com.coreclouet.getscan.utils.Website
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -23,6 +26,22 @@ class MainActivity : AppCompatActivity() {
         binding.tvInfoDownload.movementMethod = ScrollingMovementMethod()
         binding.btnDownloadScan.setOnClickListener {
             downloadManga()
+        }
+        binding.spWebsite.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //unused
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                binding.edBaseUrl.editableText.clear()
+                binding.edBaseUrl.append(Website.values()[position].url)
+            }
+
         }
         initData()
         initObservers()
@@ -53,19 +72,24 @@ class MainActivity : AppCompatActivity() {
      * Init data with preferences
      */
     private fun initData() {
+        binding.spWebsite.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, Website.values())
+
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
-        binding.edBaseUrl.append(sharedPref.getString(getString(R.string.url_key), ""))
+        binding.spWebsite.setSelection(sharedPref.getInt(getString(R.string.website_key), 0))
+        binding.edBaseUrl.append(sharedPref.getString(getString(R.string.base_url_key), ""))
+        binding.edEndpoint.append(sharedPref.getString(getString(R.string.endpoint_key), ""))
         binding.edStartChapter.append(
-            sharedPref.getInt(
+            sharedPref.getString(
                 getString(R.string.first_chapter_key),
-                1
-            ).toString()
+                "1"
+            )
         )
         binding.edLastChapter.append(
-            sharedPref.getInt(
+            sharedPref.getString(
                 getString(R.string.last_chapter_key),
-                1
-            ).toString()
+                "1"
+            )
         )
         binding.edMangaName.append(sharedPref.getString(getString(R.string.manga_name_key), ""))
     }
@@ -75,9 +99,11 @@ class MainActivity : AppCompatActivity() {
      */
     private fun downloadManga() {
         if (viewModel.checkData(
+                binding.spWebsite.selectedItem as Website,
                 binding.edBaseUrl.text.toString(),
-                binding.edStartChapter.text.toString().toInt(),
-                binding.edLastChapter.text.toString().toInt(),
+                binding.edEndpoint.text.toString(),
+                binding.edStartChapter.text.toString(),
+                binding.edLastChapter.text.toString(),
                 binding.edMangaName.text.toString()
             )
         ) {
@@ -95,7 +121,8 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.pbDownload.visibility = View.INVISIBLE
         }
-        binding.edBaseUrl.isEnabled = !isLoading
+        binding.spWebsite.isEnabled = !isLoading
+        binding.edEndpoint.isEnabled = !isLoading
         binding.edStartChapter.isEnabled = !isLoading
         binding.edLastChapter.isEnabled = !isLoading
         binding.edMangaName.isEnabled = !isLoading
@@ -108,16 +135,20 @@ class MainActivity : AppCompatActivity() {
     private fun savePreferences() {
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
         with(sharedPref.edit()) {
+            putInt(getString(R.string.website_key), binding.spWebsite.selectedItemPosition)
             if (binding.edBaseUrl.text.toString()
                     .isNotEmpty()
-            ) putString(getString(R.string.url_key), binding.edBaseUrl.text.toString())
-            if (binding.edStartChapter.text.toString().isNotEmpty()) putInt(
+            ) putString(getString(R.string.base_url_key), binding.edBaseUrl.text.toString())
+            if (binding.edEndpoint.text.toString()
+                    .isNotEmpty()
+            ) putString(getString(R.string.endpoint_key), binding.edEndpoint.text.toString())
+            if (binding.edStartChapter.text.toString().isNotEmpty()) putString(
                 getString(R.string.first_chapter_key),
-                binding.edStartChapter.text.toString().toInt()
+                binding.edStartChapter.text.toString()
             )
-            if (binding.edLastChapter.text.toString().isNotEmpty()) putInt(
+            if (binding.edLastChapter.text.toString().isNotEmpty()) putString(
                 getString(R.string.last_chapter_key),
-                binding.edLastChapter.text.toString().toInt()
+                binding.edLastChapter.text.toString()
             )
             if (binding.edMangaName.text.toString()
                     .isNotEmpty()

@@ -20,7 +20,7 @@
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ed_start_chapter"
-            app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
+            app:layout_constraintTop_toBottomOf="@+id/ed_manga_name" />
 
         <EditText
             android:id="@+id/ed_base_url"
@@ -30,10 +30,11 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
+            android:enabled="false"
             android:hint="@string/hint_url"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/sp_website" />
 
         <EditText
             android:id="@+id/ed_start_chapter"
@@ -47,7 +48,7 @@
             android:inputType="number"
             app:layout_constraintEnd_toStartOf="@+id/ed_last_chapter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
+            app:layout_constraintTop_toBottomOf="@+id/ed_manga_name" />
 
         <EditText
             android:id="@+id/ed_manga_name"
@@ -60,8 +61,9 @@
             android:hint="@string/hint_manga_name"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ed_start_chapter" />
+            app:layout_constraintTop_toBottomOf="@+id/ed_endpoint" />
 
         <Button
             android:id="@+id/btn_download_scan"
@@ -88,7 +90,7 @@
             app:layout_constraintBottom_toTopOf="@+id/pb_download"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ed_manga_name"
+            app:layout_constraintTop_toBottomOf="@+id/ed_start_chapter"
             tools:text="test"
             tools:visibility="visible" />
 
@@ -103,5 +105,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
+
+        <Spinner
+            android:id="@+id/sp_website"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/ed_endpoint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="@string/hint_endpoint"
+            android:inputType="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ed_base_url" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
