@@ -13,6 +13,7 @@ class GetSourceCodeUseCase {
         } catch (e: Exception) {
             null
         } finally {
+            urlConnection.inputStream.close()
             urlConnection.disconnect()
         }
         return result

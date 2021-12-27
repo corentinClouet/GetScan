@@ -62,6 +62,7 @@ class DownloadImageUseCase(private val context: Context) {
                 when (status) {
                     DownloadManager.STATUS_FAILED -> {
                         Log.e("CCL", "STATUS_FAILED $fileName")
+                        cursor.close()
                         return false
                     }
                     DownloadManager.STATUS_PAUSED -> {}
@@ -69,10 +70,11 @@ class DownloadImageUseCase(private val context: Context) {
                     DownloadManager.STATUS_RUNNING -> {}
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         finishDownload = true
-                        //Log.v("CCL", "STATUS_SUCCESSFUL $fileName")
+                        cursor.close()
                     }
                 }
             }
+            cursor.close()
         }
         return true
     }
