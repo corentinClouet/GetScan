@@ -66,6 +66,14 @@ class MainActivity : AppCompatActivity() {
         viewModel.loading.observe(this, { isLoading ->
             manageLoading(isLoading)
         })
+
+        viewModel.nbImages.observe(this, { nbImages ->
+            updateProgressBarMax(nbImages)
+        })
+
+        viewModel.downloadProgress.observe(this, { progress ->
+            updateDownloadProgress(progress)
+        })
     }
 
     /**
@@ -116,10 +124,13 @@ class MainActivity : AppCompatActivity() {
      */
     private fun manageLoading(isLoading: Boolean) {
         if (isLoading) {
-            binding.pbDownload.visibility = View.VISIBLE
             binding.tvInfoDownload.visibility = View.VISIBLE
+            binding.pbDownload.visibility = View.VISIBLE
+            binding.tvProgress.visibility = View.VISIBLE
         } else {
             binding.pbDownload.visibility = View.INVISIBLE
+            binding.tvProgress.visibility = View.INVISIBLE
+
         }
         binding.spWebsite.isEnabled = !isLoading
         binding.edEndpoint.isEnabled = !isLoading
@@ -155,6 +166,25 @@ class MainActivity : AppCompatActivity() {
             ) putString(getString(R.string.manga_name_key), binding.edMangaName.text.toString())
             apply()
         }
+    }
+
+    /**
+     * Update progress bar max with the number of images to download
+     * Reset progress to 0
+     */
+    private fun updateProgressBarMax(max: Int) {
+        binding.pbDownload.max = max
+        binding.pbDownload.progress = 0
+        binding.tvProgress.text = getString(R.string.download_progress, 0, max)
+    }
+
+    /**
+     * Update download progress
+     */
+    private fun updateDownloadProgress(progress: Int) {
+        binding.pbDownload.progress = progress
+        binding.tvProgress.text =
+            getString(R.string.download_progress, progress, binding.pbDownload.max)
     }
 
 }

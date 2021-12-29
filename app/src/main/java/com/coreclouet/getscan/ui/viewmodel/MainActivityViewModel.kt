@@ -25,6 +25,12 @@ class MainActivityViewModel(
     private val _loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val loading: LiveData<Boolean> = _loading
 
+    private val _nbImages: MutableLiveData<Int> by lazy { MutableLiveData<Int>() }
+    val nbImages: LiveData<Int> = _nbImages
+
+    private val _downloadProgress: MutableLiveData<Int> by lazy { MutableLiveData<Int>() }
+    val downloadProgress: LiveData<Int> = _downloadProgress
+
     private lateinit var website: Website
     private lateinit var url: String
     private var firstChapter: Int = 1
@@ -55,6 +61,7 @@ class MainActivityViewModel(
                 // find all images in source code
                 val images = findImagesUseCase.invoke(sourceCode, website)
                 // update progress
+                updateNbImages(images.size)
                 updateInfos("Chapter $currentChapter nbImages ${images.size}")
                 // download each images
                 for (currentImageIndice in images.indices) {
@@ -68,6 +75,8 @@ class MainActivityViewModel(
                     if (!downloadResult) {
                         updateError("DL FAILED Chapter $currentChapter image ${currentImageIndice + 1}")
                     }
+                    // update download progress
+                    updateDownloadProgress(currentImageIndice + 1)
                 }
             }
             // download finish
@@ -123,6 +132,22 @@ class MainActivityViewModel(
      */
     private fun updateError(error: String) {
         this.error = this.error + "\n$error"
+    }
+
+    /**
+     * Update nb images to download to update the UI progress bar
+     * Reset progress to 0
+     */
+    private fun updateNbImages(nbImages: Int) {
+        _nbImages.postValue(nbImages)
+        _downloadProgress.postValue(0)
+    }
+
+    /**
+     * Update progress bar with current download progress
+     */
+    private fun updateDownloadProgress(progress: Int) {
+        _downloadProgress.postValue(progress)
     }
 
 }

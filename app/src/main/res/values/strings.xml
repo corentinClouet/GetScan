@@ -8,6 +8,7 @@
     <string name="hint_last_chapter">Last chapter</string>
     <string name="hint_manga_name">Manga name</string>
     <string name="download_scan">Download scan</string>
+    <string name="download_progress">%1d/%2d</string>
 
     <!--KEYS-->
     <string name="website_key">WEBSITE_KEY</string>

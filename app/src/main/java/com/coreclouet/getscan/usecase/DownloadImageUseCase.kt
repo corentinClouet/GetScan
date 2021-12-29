@@ -25,9 +25,7 @@ class DownloadImageUseCase(private val context: Context) {
             val downloadUri: Uri = Uri.parse(downloadUrlOfImage)
             val request = DownloadManager.Request(downloadUri)
             val filename = getFileName(currentChapter, nbImage)
-
-            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
-                .setAllowedOverRoaming(false)
+            request.setAllowedOverRoaming(false)
                 .setTitle(currentChapter.toString() + "_" + nbImage.toString())
                 .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
@@ -38,7 +36,7 @@ class DownloadImageUseCase(private val context: Context) {
             val downloadId = downloadManager?.enqueue(request)
             return queryDownload(filename, downloadId, downloadManager)
         } catch (e: Exception) {
-            Log.e("CCL DownloadImageUseCase", e.message.toString())
+            Log.e("CCL", e.message.toString())
             return false
         }
     }
@@ -69,6 +67,7 @@ class DownloadImageUseCase(private val context: Context) {
                     DownloadManager.STATUS_PENDING -> {}
                     DownloadManager.STATUS_RUNNING -> {}
                     DownloadManager.STATUS_SUCCESSFUL -> {
+                        Log.d("CCL", "STATUS_SUCCESSFUL $fileName")
                         finishDownload = true
                         cursor.close()
                     }
