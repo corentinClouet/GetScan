@@ -8,12 +8,13 @@ class GetSourceCodeUseCase {
     fun invoke(sourceUrl: String): String? {
         val url = URL(sourceUrl)
         val urlConnection = url.openConnection() as HttpURLConnection
-        val result: String? = try {
-            urlConnection.inputStream.bufferedReader().readText()
-        } catch (e: Exception) {
-            null
-        } finally {
+        var result: String?
+        try {
+            result = urlConnection.inputStream.bufferedReader().readText()
             urlConnection.inputStream.close()
+        } catch (e: Exception) {
+            result = null
+        } finally {
             urlConnection.disconnect()
         }
         return result
