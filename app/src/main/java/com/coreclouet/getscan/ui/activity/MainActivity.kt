@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
         // Show error(s) click
         binding.btShowError.setOnClickListener {
-            // TODO show error dialog
+            viewModel.getErrors()
         }
     }
 
@@ -83,6 +83,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.downloadProgress.observe(this, { progress ->
             updateDownloadProgress(progress)
+        })
+
+        viewModel.errors.observe(this, {
+            showErrors(it)
         })
     }
 
@@ -149,6 +153,7 @@ class MainActivity : AppCompatActivity() {
         binding.edLastChapter.isEnabled = !isLoading
         binding.edMangaName.isEnabled = !isLoading
         binding.btnDownloadScan.isEnabled = !isLoading
+        binding.btShowError.isEnabled = !isLoading
     }
 
     /**
@@ -196,6 +201,13 @@ class MainActivity : AppCompatActivity() {
         binding.pbDownload.progress = progress
         binding.tvProgress.text =
             getString(R.string.download_progress, progress, binding.pbDownload.max)
+    }
+
+    /**
+     * Show errors
+     */
+    private fun showErrors(error: String) {
+        binding.tvInfoDownload.append(error)
     }
 
 }

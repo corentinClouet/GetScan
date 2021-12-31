@@ -10,13 +10,15 @@ import com.coreclouet.getscan.usecase.FindImagesUseCase
 import com.coreclouet.getscan.usecase.GetSourceCodeUseCase
 import com.coreclouet.getscan.utils.CHAPTER
 import com.coreclouet.getscan.model.Website
+import com.coreclouet.getscan.usecase.GetErrorsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
     private val getSourceCodeUseCase: GetSourceCodeUseCase,
     private val findImagesUseCase: FindImagesUseCase,
-    private val downloadImageUseCase: DownloadImageUseCase
+    private val downloadImageUseCase: DownloadImageUseCase,
+    private val getErrorsUseCase: GetErrorsUseCase
 ) : ViewModel() {
 
     private val _infos: MutableLiveData<String> by lazy { MutableLiveData<String>() }
@@ -30,6 +32,9 @@ class MainActivityViewModel(
 
     private val _downloadProgress: MutableLiveData<Int> by lazy { MutableLiveData<Int>() }
     val downloadProgress: LiveData<Int> = _downloadProgress
+
+    private val _errors: MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val errors: LiveData<String> = _errors
 
     private lateinit var website: Website
     private lateinit var url: String
@@ -124,6 +129,15 @@ class MainActivityViewModel(
      */
     private fun updateDownloadProgress(progress: Int) {
         _downloadProgress.postValue(progress)
+    }
+
+    /**
+     * Get download errors
+     */
+    fun getErrors() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _errors.postValue(getErrorsUseCase.invoke())
+        }
     }
 
 }

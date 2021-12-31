@@ -39,7 +39,18 @@ class DownloadImageUseCase(
                     File.separator + "$mangaName/$currentChapter/$filename.jpg"
                 )
             val downloadId = downloadManager?.enqueue(request)
-            return queryDownload(mangaName, filename, downloadId, downloadManager)
+            val downloadResult = queryDownload(filename, downloadId, downloadManager)
+            // check error
+            if (!downloadResult) {
+                errorRepository.insert(
+                    ErrorEntity(
+                        0,
+                        mangaName,
+                        "DL FAILED on chapter $currentChapter image $nbImage"
+                    )
+                )
+            }
+            return downloadResult
         } catch (e: Exception) {
             errorRepository.insert(ErrorEntity(0, mangaName, e.message.toString()))
             return false
@@ -50,7 +61,6 @@ class DownloadImageUseCase(
      * Check download state
      */
     private suspend fun queryDownload(
-        mangaName: String,
         fileName: String,
         downloadId: Long?,
         downloadManager: DownloadManager?
@@ -65,7 +75,6 @@ class DownloadImageUseCase(
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 when (status) {
                     DownloadManager.STATUS_FAILED -> {
-                        errorRepository.insert(ErrorEntity(0, mangaName, "DL FAILED $fileName"))
                         cursor.close()
                         return false
                     }

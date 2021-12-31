@@ -7,6 +7,7 @@ import com.coreclouet.getscan.repository.ErrorRepositoryImpl
 import com.coreclouet.getscan.ui.viewmodel.MainActivityViewModel
 import com.coreclouet.getscan.usecase.DownloadImageUseCase
 import com.coreclouet.getscan.usecase.FindImagesUseCase
+import com.coreclouet.getscan.usecase.GetErrorsUseCase
 import com.coreclouet.getscan.usecase.GetSourceCodeUseCase
 import com.coreclouet.getscan.utils.DATABASE_NAME
 import org.koin.android.ext.koin.androidApplication
@@ -20,7 +21,8 @@ val appModule = module {
         MainActivityViewModel(
             getSourceCodeUseCase = get(),
             findImagesUseCase = get(),
-            downloadImageUseCase = get()
+            downloadImageUseCase = get(),
+            getErrorsUseCase = get()
         )
     }
 
@@ -28,6 +30,7 @@ val appModule = module {
     factory { GetSourceCodeUseCase(errorRepository = get()) }
     factory { FindImagesUseCase() }
     factory { DownloadImageUseCase(context = androidContext(), errorRepository = get()) }
+    factory { GetErrorsUseCase(errorRepository = get()) }
 
     // Repositories
     factory<ErrorRepository> { ErrorRepositoryImpl(errorDao = get()) }
