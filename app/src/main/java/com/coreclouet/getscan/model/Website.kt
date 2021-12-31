@@ -1,4 +1,4 @@
-package com.coreclouet.getscan.utils
+package com.coreclouet.getscan.model
 
 enum class Website(val url: String) {
     SCAN_FR("https://www.scan-fr.cc/manga/"),

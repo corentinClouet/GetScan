@@ -1,5 +1,6 @@
 package com.coreclouet.getscan.usecase
 
+import com.coreclouet.getscan.model.Website
 import com.coreclouet.getscan.utils.*
 
 class FindImagesUseCase {

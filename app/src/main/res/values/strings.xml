@@ -9,6 +9,7 @@
     <string name="hint_manga_name">Manga name</string>
     <string name="download_scan">Download scan</string>
     <string name="download_progress">%1d/%2d</string>
+    <string name="show_errors">Show error(s)</string>
 
     <!--KEYS-->
     <string name="website_key">WEBSITE_KEY</string>

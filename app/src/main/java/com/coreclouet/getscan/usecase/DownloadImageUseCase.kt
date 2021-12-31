@@ -6,9 +6,14 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import com.coreclouet.getscan.db.entity.ErrorEntity
+import com.coreclouet.getscan.repository.ErrorRepository
 import java.io.File
 
-class DownloadImageUseCase(private val context: Context) {
+class DownloadImageUseCase(
+    private val context: Context,
+    private val errorRepository: ErrorRepository
+) {
 
     /**
      * Download image
@@ -34,9 +39,9 @@ class DownloadImageUseCase(private val context: Context) {
                     File.separator + "$mangaName/$currentChapter/$filename.jpg"
                 )
             val downloadId = downloadManager?.enqueue(request)
-            return queryDownload(filename, downloadId, downloadManager)
+            return queryDownload(mangaName, filename, downloadId, downloadManager)
         } catch (e: Exception) {
-            Log.e("CCL", e.message.toString())
+            errorRepository.insert(ErrorEntity(0, mangaName, e.message.toString()))
             return false
         }
     }
@@ -45,6 +50,7 @@ class DownloadImageUseCase(private val context: Context) {
      * Check download state
      */
     private suspend fun queryDownload(
+        mangaName: String,
         fileName: String,
         downloadId: Long?,
         downloadManager: DownloadManager?
@@ -59,7 +65,7 @@ class DownloadImageUseCase(private val context: Context) {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 when (status) {
                     DownloadManager.STATUS_FAILED -> {
-                        Log.e("CCL", "STATUS_FAILED $fileName")
+                        errorRepository.insert(ErrorEntity(0, mangaName, "DL FAILED $fileName"))
                         cursor.close()
                         return false
                     }

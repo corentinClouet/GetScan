@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.coreclouet.getscan.R
 import com.coreclouet.getscan.databinding.ActivityMainBinding
+import com.coreclouet.getscan.model.Website
 import com.coreclouet.getscan.ui.viewmodel.MainActivityViewModel
-import com.coreclouet.getscan.utils.Website
+import com.coreclouet.getscan.utils.DEFAULT_NB_CHAPTER
+import com.coreclouet.getscan.utils.EMPTY
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -23,10 +25,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.tvInfoDownload.movementMethod = ScrollingMovementMethod()
+        initUiEvents()
+        initData()
+        initObservers()
+    }
+
+    /**
+     * Save form in preferences
+     */
+    override fun onPause() {
+        super.onPause()
+        savePreferences()
+    }
+
+    private fun initUiEvents() {
+        // Download scan click
         binding.btnDownloadScan.setOnClickListener {
             downloadManga()
         }
+        // Website spinner selected
         binding.spWebsite.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //unused
@@ -41,18 +58,11 @@ class MainActivity : AppCompatActivity() {
                 binding.edBaseUrl.editableText.clear()
                 binding.edBaseUrl.append(Website.values()[position].url)
             }
-
         }
-        initData()
-        initObservers()
-    }
-
-    /**
-     * Save form in preferences
-     */
-    override fun onPause() {
-        super.onPause()
-        savePreferences()
+        // Show error(s) click
+        binding.btShowError.setOnClickListener {
+            // TODO show error dialog
+        }
     }
 
     /**
@@ -80,26 +90,27 @@ class MainActivity : AppCompatActivity() {
      * Init data with preferences
      */
     private fun initData() {
+        binding.tvInfoDownload.movementMethod = ScrollingMovementMethod()
         binding.spWebsite.adapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_item, Website.values())
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
         binding.spWebsite.setSelection(sharedPref.getInt(getString(R.string.website_key), 0))
-        binding.edBaseUrl.append(sharedPref.getString(getString(R.string.base_url_key), ""))
-        binding.edEndpoint.append(sharedPref.getString(getString(R.string.endpoint_key), ""))
+        binding.edBaseUrl.append(sharedPref.getString(getString(R.string.base_url_key), EMPTY))
+        binding.edEndpoint.append(sharedPref.getString(getString(R.string.endpoint_key), EMPTY))
         binding.edStartChapter.append(
             sharedPref.getString(
                 getString(R.string.first_chapter_key),
-                "1"
+                DEFAULT_NB_CHAPTER
             )
         )
         binding.edLastChapter.append(
             sharedPref.getString(
                 getString(R.string.last_chapter_key),
-                "1"
+                DEFAULT_NB_CHAPTER
             )
         )
-        binding.edMangaName.append(sharedPref.getString(getString(R.string.manga_name_key), ""))
+        binding.edMangaName.append(sharedPref.getString(getString(R.string.manga_name_key), EMPTY))
     }
 
     /**

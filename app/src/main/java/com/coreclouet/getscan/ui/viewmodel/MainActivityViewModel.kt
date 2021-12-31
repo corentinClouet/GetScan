@@ -9,7 +9,7 @@ import com.coreclouet.getscan.usecase.DownloadImageUseCase
 import com.coreclouet.getscan.usecase.FindImagesUseCase
 import com.coreclouet.getscan.usecase.GetSourceCodeUseCase
 import com.coreclouet.getscan.utils.CHAPTER
-import com.coreclouet.getscan.utils.Website
+import com.coreclouet.getscan.model.Website
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -37,27 +37,19 @@ class MainActivityViewModel(
     private var lastChapter: Int = 1
     private lateinit var mangaName: String
 
-    private var error: String = ""
-
     /**
      * Download selected chapters
      */
     fun downloadManga() {
         viewModelScope.launch(Dispatchers.IO) {
             //reset error and infos
-            error = ""
             _infos.postValue("")
             // loop on all chapters
             for (currentChapter in firstChapter..lastChapter) {
                 setLoading(true)
                 // get URL and source code of it
                 val currentUrl = url.replace(CHAPTER, currentChapter.toString())
-                val sourceCode = getSourceCodeUseCase.invoke(currentUrl)
-                if (sourceCode == null) {
-                    Log.e("CCL", "URL error $currentChapter")
-                    updateError("URL error on chapter : $currentChapter")
-                    continue
-                }
+                val sourceCode = getSourceCodeUseCase.invoke(mangaName, currentUrl) ?: continue
                 // find all images in source code
                 val images = findImagesUseCase.invoke(sourceCode, website)
                 // update progress
@@ -65,28 +57,19 @@ class MainActivityViewModel(
                 updateInfos("Chapter $currentChapter nbImages ${images.size}")
                 // download each images
                 for (currentImageIndice in images.indices) {
-                    val downloadResult = downloadImageUseCase.invoke(
+                    downloadImageUseCase.invoke(
                         mangaName,
                         currentChapter,
                         currentImageIndice + 1,
                         images[currentImageIndice]
                     )
-                    // manage error if download failed
-                    if (!downloadResult) {
-                        updateError("DL FAILED Chapter $currentChapter image ${currentImageIndice + 1}")
-                    }
                     // update download progress
                     updateDownloadProgress(currentImageIndice + 1)
                 }
             }
             // download finish
             setLoading(false)
-            if (error.isEmpty()) {
-                updateInfos("Download finish !")
-            } else {
-                updateInfos(error)
-            }
-
+            updateInfos("Download finish !")
         }
     }
 
@@ -125,13 +108,6 @@ class MainActivityViewModel(
     private fun updateInfos(info: String) {
         Log.d("CCL", info)
         _infos.postValue(info)
-    }
-
-    /**
-     * Update error string
-     */
-    private fun updateError(error: String) {
-        this.error = this.error + "\n$error"
     }
 
     /**
