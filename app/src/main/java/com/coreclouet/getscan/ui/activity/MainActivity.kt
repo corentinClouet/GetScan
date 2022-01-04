@@ -139,7 +139,6 @@ class MainActivity : AppCompatActivity() {
      */
     private fun manageLoading(isLoading: Boolean) {
         if (isLoading) {
-            binding.tvInfoDownload.visibility = View.VISIBLE
             binding.pbDownload.visibility = View.VISIBLE
             binding.tvProgress.visibility = View.VISIBLE
         } else {

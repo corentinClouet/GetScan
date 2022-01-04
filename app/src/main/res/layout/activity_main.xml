@@ -85,13 +85,11 @@
             android:gravity="bottom|center"
             android:scrollbars="vertical"
             android:textAlignment="center"
-            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/pb_download"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ed_start_chapter"
-            tools:text="test"
-            tools:visibility="visible" />
+            tools:text="test" />
 
         <ProgressBar
             android:id="@+id/pb_download"

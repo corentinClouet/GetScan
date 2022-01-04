@@ -26,7 +26,7 @@ class DownloadImageUseCase(
     ): Boolean {
         try {
             val downloadManager =
-                context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+                context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val downloadUri: Uri = Uri.parse(downloadUrlOfImage)
             val request = DownloadManager.Request(downloadUri)
             val filename = getFileName(currentChapter, nbImage)
@@ -38,7 +38,7 @@ class DownloadImageUseCase(
                     Environment.DIRECTORY_DOWNLOADS,
                     File.separator + "$mangaName/$currentChapter/$filename.jpg"
                 )
-            val downloadId = downloadManager?.enqueue(request)
+            val downloadId = downloadManager.enqueue(request)
             val downloadResult = queryDownload(filename, downloadId, downloadManager)
             // check error
             if (!downloadResult) {
