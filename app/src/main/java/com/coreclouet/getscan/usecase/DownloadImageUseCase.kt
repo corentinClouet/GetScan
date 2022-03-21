@@ -98,10 +98,16 @@ class DownloadImageUseCase(
      */
     private fun getFileName(currentChapter: Int, nbImage: Int): String {
         var finalNbImage = ""
-        if (nbImage.toString().length == 1) {
-            finalNbImage = "00$nbImage"
-        } else if (nbImage.toString().length < 100) {
-            finalNbImage = "0$nbImage"
+        finalNbImage = when {
+            nbImage < 10 -> {
+                "00$nbImage"
+            }
+            nbImage <= 99 -> {
+                "0$nbImage"
+            }
+            else -> {
+                nbImage.toString()
+            }
         }
         return currentChapter.toString() + "_" + finalNbImage
     }
