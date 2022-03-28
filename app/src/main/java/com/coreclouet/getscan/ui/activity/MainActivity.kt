@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.coreclouet.getscan.R
 import com.coreclouet.getscan.databinding.ActivityMainBinding
+import com.coreclouet.getscan.db.entity.FolderEntity
 import com.coreclouet.getscan.model.Website
 import com.coreclouet.getscan.ui.viewmodel.MainActivityViewModel
 import com.coreclouet.getscan.utils.DEFAULT_NB_CHAPTER
@@ -87,6 +88,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.errors.observe(this, {
             showErrors(it)
+        })
+
+        viewModel.folders.observe(this, {
+            setFoldersAdapter(it)
         })
     }
 
@@ -207,6 +212,23 @@ class MainActivity : AppCompatActivity() {
      */
     private fun showErrors(error: String) {
         binding.tvInfoDownload.append(error)
+    }
+
+    private fun setFoldersAdapter(folders: List<FolderEntity>) {
+        val foldersNames = folders.map { it.name }
+        val foldersEndpoint = folders.map { it.endpoint }
+
+        val namesAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line, foldersNames
+        )
+        binding.edMangaName.setAdapter(namesAdapter)
+
+        val endpointAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line, foldersEndpoint
+        )
+        binding.edEndpoint.setAdapter(endpointAdapter)
     }
 
 }

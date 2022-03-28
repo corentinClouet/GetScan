@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coreclouet.getscan.usecase.DownloadImageUseCase
-import com.coreclouet.getscan.usecase.FindImagesUseCase
-import com.coreclouet.getscan.usecase.GetSourceCodeUseCase
-import com.coreclouet.getscan.utils.CHAPTER
+import com.coreclouet.getscan.db.entity.FolderEntity
 import com.coreclouet.getscan.model.Website
-import com.coreclouet.getscan.usecase.GetErrorsUseCase
+import com.coreclouet.getscan.usecase.*
+import com.coreclouet.getscan.utils.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,7 +16,9 @@ class MainActivityViewModel(
     private val getSourceCodeUseCase: GetSourceCodeUseCase,
     private val findImagesUseCase: FindImagesUseCase,
     private val downloadImageUseCase: DownloadImageUseCase,
-    private val getErrorsUseCase: GetErrorsUseCase
+    private val getErrorsUseCase: GetErrorsUseCase,
+    private val getFoldersUseCase: GetFoldersUseCase,
+    private val addFolderUseCase: AddFolderUseCase
 ) : ViewModel() {
 
     private val _infos: MutableLiveData<String> by lazy { MutableLiveData<String>() }
@@ -36,11 +36,18 @@ class MainActivityViewModel(
     private val _errors: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val errors: LiveData<String> = _errors
 
+    private val _folders: MutableLiveData<List<FolderEntity>> by lazy { MutableLiveData<List<FolderEntity>>() }
+    val folders: LiveData<List<FolderEntity>> = _folders
+
     private lateinit var website: Website
     private lateinit var url: String
     private var firstChapter: Int = 1
     private var lastChapter: Int = 1
     private lateinit var mangaName: String
+
+    init {
+        getFolders()
+    }
 
     /**
      * Download selected chapters
@@ -53,7 +60,7 @@ class MainActivityViewModel(
             for (currentChapter in firstChapter..lastChapter) {
                 setLoading(true)
                 // get URL and source code of it
-                val currentUrl = url.replace(CHAPTER, currentChapter.toString())
+                val currentUrl = url.replace(ID, currentChapter.toString())
                 val sourceCode = getSourceCodeUseCase.invoke(mangaName, currentUrl) ?: continue
                 // find all images in source code
                 val images = findImagesUseCase.invoke(sourceCode, website)
@@ -74,6 +81,7 @@ class MainActivityViewModel(
             }
             // download finish
             setLoading(false)
+            getFolders()
             updateInfos("Download finish !")
         }
     }
@@ -89,7 +97,7 @@ class MainActivityViewModel(
         lastChapter: String?,
         mangaName: String?
     ): Boolean {
-        if (sourceUrl.isNullOrEmpty() || endpoint.isNullOrEmpty() || !endpoint.contains(CHAPTER)
+        if (sourceUrl.isNullOrEmpty() || endpoint.isNullOrEmpty() || !endpoint.contains(ID)
             || firstChapter.isNullOrEmpty() || lastChapter.isNullOrEmpty() || lastChapter.toInt() < firstChapter.toInt() || mangaName.isNullOrEmpty()
         ) return false
         this.website = website
@@ -97,7 +105,15 @@ class MainActivityViewModel(
         this.firstChapter = firstChapter.toInt()
         this.lastChapter = lastChapter.toInt()
         this.mangaName = mangaName
+        // save folder in database
+        addFolder(mangaName, endpoint)
         return true
+    }
+
+    private fun addFolder(name: String, endpoint: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addFolderUseCase.invoke(mangaName, endpoint)
+        }
     }
 
     /**
@@ -140,4 +156,9 @@ class MainActivityViewModel(
         }
     }
 
+    private fun getFolders() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _folders.postValue(getFoldersUseCase.invoke())
+        }
+    }
 }

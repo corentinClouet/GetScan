@@ -4,11 +4,10 @@ import androidx.room.Room
 import com.coreclouet.getscan.db.AppDatabase
 import com.coreclouet.getscan.repository.ErrorRepository
 import com.coreclouet.getscan.repository.ErrorRepositoryImpl
+import com.coreclouet.getscan.repository.FolderRepository
+import com.coreclouet.getscan.repository.FolderRepositoryImpl
 import com.coreclouet.getscan.ui.viewmodel.MainActivityViewModel
-import com.coreclouet.getscan.usecase.DownloadImageUseCase
-import com.coreclouet.getscan.usecase.FindImagesUseCase
-import com.coreclouet.getscan.usecase.GetErrorsUseCase
-import com.coreclouet.getscan.usecase.GetSourceCodeUseCase
+import com.coreclouet.getscan.usecase.*
 import com.coreclouet.getscan.utils.DATABASE_NAME
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -22,7 +21,9 @@ val appModule = module {
             getSourceCodeUseCase = get(),
             findImagesUseCase = get(),
             downloadImageUseCase = get(),
-            getErrorsUseCase = get()
+            getErrorsUseCase = get(),
+            getFoldersUseCase = get(),
+            addFolderUseCase = get()
         )
     }
 
@@ -31,9 +32,12 @@ val appModule = module {
     factory { FindImagesUseCase() }
     factory { DownloadImageUseCase(context = androidContext(), errorRepository = get()) }
     factory { GetErrorsUseCase(errorRepository = get()) }
+    factory { GetFoldersUseCase(folderRepository = get()) }
+    factory { AddFolderUseCase(folderRepository = get()) }
 
     // Repositories
     factory<ErrorRepository> { ErrorRepositoryImpl(errorDao = get()) }
+    factory<FolderRepository> { FolderRepositoryImpl(folderDao = get()) }
 
     // Database
     single {
@@ -43,4 +47,5 @@ val appModule = module {
             .build()
     }
     factory { get<AppDatabase>().errorDao() }
+    factory { get<AppDatabase>().folderDao() }
 }
