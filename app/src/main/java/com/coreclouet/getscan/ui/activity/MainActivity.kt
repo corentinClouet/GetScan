@@ -70,29 +70,29 @@ class MainActivity : AppCompatActivity() {
      * Init infos and loading observers
      */
     private fun initObservers() {
-        viewModel.infos.observe(this, { infos ->
+        viewModel.infos.observe(this) { infos ->
             binding.tvInfoDownload.append("\n$infos")
-        })
+        }
 
-        viewModel.loading.observe(this, { isLoading ->
+        viewModel.loading.observe(this) { isLoading ->
             manageLoading(isLoading)
-        })
+        }
 
-        viewModel.nbImages.observe(this, { nbImages ->
+        viewModel.nbImages.observe(this) { nbImages ->
             updateProgressBarMax(nbImages)
-        })
+        }
 
-        viewModel.downloadProgress.observe(this, { progress ->
+        viewModel.downloadProgress.observe(this) { progress ->
             updateDownloadProgress(progress)
-        })
+        }
 
-        viewModel.errors.observe(this, {
+        viewModel.errors.observe(this) {
             showErrors(it)
-        })
+        }
 
-        viewModel.folders.observe(this, {
+        viewModel.folders.observe(this) {
             setFoldersAdapter(it)
-        })
+        }
     }
 
     /**
@@ -215,20 +215,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFoldersAdapter(folders: List<FolderEntity>) {
-        val foldersNames = folders.map { it.name }
-        val foldersEndpoint = folders.map { it.endpoint }
-
-        val namesAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+        val namesAdapter: ArrayAdapter<FolderEntity> = ArrayAdapter<FolderEntity>(
             this,
-            android.R.layout.simple_dropdown_item_1line, foldersNames
+            android.R.layout.simple_dropdown_item_1line, folders
         )
         binding.edMangaName.setAdapter(namesAdapter)
-
-        val endpointAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_dropdown_item_1line, foldersEndpoint
-        )
-        binding.edEndpoint.setAdapter(endpointAdapter)
+        binding.edMangaName.setOnItemClickListener { adapterView, view, i, l ->
+            val folder: FolderEntity = adapterView.getItemAtPosition(i) as FolderEntity
+            binding.edEndpoint.editableText.clear()
+            binding.edEndpoint.append(folder.endpoint)
+            binding.edStartChapter.editableText.clear()
+            binding.edStartChapter.append((folder.lastChapter + 1).toString())
+            binding.edLastChapter.editableText.clear()
+            binding.edLastChapter.append((folder.lastChapter + 1).toString())
+        }
     }
 
 }

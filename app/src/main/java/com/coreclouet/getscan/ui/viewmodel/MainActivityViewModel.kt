@@ -106,13 +106,13 @@ class MainActivityViewModel(
         this.lastChapter = lastChapter.toInt()
         this.mangaName = mangaName
         // save folder in database
-        addFolder(mangaName, endpoint)
+        addFolder(mangaName, endpoint, lastChapter.toInt())
         return true
     }
 
-    private fun addFolder(name: String, endpoint: String) {
+    private fun addFolder(name: String, endpoint: String, lastChapter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            addFolderUseCase.invoke(mangaName, endpoint)
+            addFolderUseCase.invoke(name, endpoint, lastChapter)
         }
     }
 

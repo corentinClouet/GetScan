@@ -43,6 +43,7 @@ val appModule = module {
     single {
         // TODO remove fallbackToDestructiveMigration when this goes to production
         Room.databaseBuilder(androidApplication(), AppDatabase::class.java, DATABASE_NAME)
+            .createFromAsset("mangas.db")
             .fallbackToDestructiveMigration()
             .build()
     }

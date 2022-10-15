@@ -8,8 +8,8 @@ class AddFolderUseCase(private val folderRepository: FolderRepository) {
     /**
      * Add folder
      */
-    suspend fun invoke(name: String, endpoint: String) {
-        folderRepository.insert(FolderEntity(name, endpoint))
+    suspend fun invoke(name: String, endpoint: String, lastChapter: Int) {
+        folderRepository.insert(FolderEntity(name, endpoint, lastChapter))
     }
 
 }
