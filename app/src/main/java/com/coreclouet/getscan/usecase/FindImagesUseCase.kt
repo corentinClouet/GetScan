@@ -37,7 +37,7 @@ class FindImagesUseCase {
         val imgRegex = Regex(HTTP_IMG_REGEX)
         val imgMatches = imgRegex.findAll(readerMatch)
         val images = imgMatches.map { it.groupValues[0] }.joinToString(separator = DELIMITER)
-        return images.split(DELIMITER)
+        return images.split(DELIMITER).map { replaceUnusedCharacters(it) }
     }
 
     /**
