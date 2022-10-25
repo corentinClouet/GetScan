@@ -20,4 +20,7 @@ interface ErrorDao {
 
     @Delete
     fun deleteAll(errors: List<ErrorEntity>)
+
+    @Query("DELETE FROM $ERROR_TABLE_NAME")
+    fun deleteAll()
 }

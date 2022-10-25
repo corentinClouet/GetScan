@@ -23,7 +23,8 @@ val appModule = module {
             downloadImageUseCase = get(),
             getErrorsUseCase = get(),
             getFoldersUseCase = get(),
-            addFolderUseCase = get()
+            addFolderUseCase = get(),
+            deleteErrorsUseCase = get()
         )
     }
 
@@ -34,6 +35,8 @@ val appModule = module {
     factory { GetErrorsUseCase(errorRepository = get()) }
     factory { GetFoldersUseCase(folderRepository = get()) }
     factory { AddFolderUseCase(folderRepository = get()) }
+    factory { DeleteErrorsUseCase(errorRepository = get()) }
+
 
     // Repositories
     factory<ErrorRepository> { ErrorRepositoryImpl(errorDao = get()) }

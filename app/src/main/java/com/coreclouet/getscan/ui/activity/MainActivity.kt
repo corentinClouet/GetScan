@@ -3,6 +3,9 @@ package com.coreclouet.getscan.ui.activity
 import android.content.Context
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -29,6 +32,23 @@ class MainActivity : AppCompatActivity() {
         initUiEvents()
         initData()
         initObservers()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.scan_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.clear_error -> {
+                viewModel.deleteErrors()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     /**

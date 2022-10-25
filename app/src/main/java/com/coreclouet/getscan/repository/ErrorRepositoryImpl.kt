@@ -14,4 +14,6 @@ class ErrorRepositoryImpl(private val errorDao: ErrorDao) : ErrorRepository {
     }
 
     override suspend fun deleteAll(errors: List<ErrorEntity>) = errorDao.deleteAll(errors)
+
+    override suspend fun deleteAll() = errorDao.deleteAll()
 }

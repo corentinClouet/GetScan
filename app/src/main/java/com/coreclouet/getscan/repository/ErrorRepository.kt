@@ -6,4 +6,5 @@ interface ErrorRepository {
     suspend fun getAll(): List<ErrorEntity>?
     suspend fun insert(error: ErrorEntity)
     suspend fun deleteAll(errors: List<ErrorEntity>)
+    suspend fun deleteAll()
 }

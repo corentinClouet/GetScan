@@ -18,7 +18,8 @@ class MainActivityViewModel(
     private val downloadImageUseCase: DownloadImageUseCase,
     private val getErrorsUseCase: GetErrorsUseCase,
     private val getFoldersUseCase: GetFoldersUseCase,
-    private val addFolderUseCase: AddFolderUseCase
+    private val addFolderUseCase: AddFolderUseCase,
+    private val deleteErrorsUseCase: DeleteErrorsUseCase
 ) : ViewModel() {
 
     private val _infos: MutableLiveData<String> by lazy { MutableLiveData<String>() }
@@ -159,6 +160,12 @@ class MainActivityViewModel(
     private fun getFolders() {
         viewModelScope.launch(Dispatchers.IO) {
             _folders.postValue(getFoldersUseCase.invoke())
+        }
+    }
+
+    fun deleteErrors() {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteErrorsUseCase.invoke()
         }
     }
 }
