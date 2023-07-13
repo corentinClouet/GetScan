@@ -14,8 +14,5 @@ class MyApplication : Application() {
             androidContext(this@MyApplication)
             modules(appModule)
         }
-        // Strict mode
-        if (BuildConfig.DEBUG)
-            StrictMode.enableDefaults()
     }
 }
