@@ -1,5 +1,6 @@
 package com.coreclouet.getscan.usecase
 
+import android.util.Log
 import com.coreclouet.getscan.model.Website
 import com.coreclouet.getscan.utils.*
 
@@ -32,11 +33,14 @@ class FindImagesUseCase {
     private suspend fun getImagesForSushiScan(sourceCode: String): List<String> {
         val readerRegex = Regex(READER_REGEX)
         val readerMatches = readerRegex.findAll(sourceCode)
-        val readerMatch =
+        var readerMatch =
             readerMatches.map { it.groupValues[0] }.joinToString(separator = DELIMITER)
+        readerMatch = readerMatch.replace(" ", "%20") // specific SUSHI_SCAN.FR
+        Log.d("CCL", readerMatch)
         val imgRegex = Regex(HTTP_IMG_REGEX)
         val imgMatches = imgRegex.findAll(readerMatch)
         val images = imgMatches.map { it.groupValues[0] }.joinToString(separator = DELIMITER)
+        Log.d("CCL", images)
         return images.split(DELIMITER).map { replaceUnusedCharacters(it) }
     }
 
