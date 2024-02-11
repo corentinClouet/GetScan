@@ -6,5 +6,6 @@ enum class Website(val url: String) {
     SUSHI_SCAN_NET("https://sushiscan.net/"),
     SUSHI_SCAN_FR("https://sushiscan.fr/"),
     SCAN_MANGA("https://scanmanga-vf.cc/manga/"),
-    MANGA_SCAN("https://mangascan.cc/manga/")
+    MANGA_SCAN("https://mangascan-fr.com/manga/"),
+    LEL_MANGA("https://www.lelmanga.com/")
 }

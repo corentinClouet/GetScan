@@ -10,7 +10,7 @@ class FindImagesUseCase {
      * Get list of images url
      */
     suspend fun invoke(sourceCode: String, website: Website): List<String> {
-        return if (website == Website.SUSHI_SCAN_NET || website == Website.SUSHI_SCAN_FR) {
+        return if (website == Website.SUSHI_SCAN_NET || website == Website.LEL_MANGA) {
             getImagesForSushiScan(sourceCode)
         } else {
             getImagesByDefault(sourceCode)
